@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<head>
+    <title>Vue.JS InterActivity</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app"><!--Creating the element where vue will be mounted on-->
+        <header>
+            <h1 v-text="sitename"></h1>
+            <button v-on:click="showCheckout">
+                {{cartItemCount}}
+
+                <span class="fas fa-cart-plus"></span> Checkout
+            </button>
+
+        </header>
+        <main>
+            <div v-if="showProduct"><!--This page displays the product page-->
+                <figure>
+                    <!--bind 'src' attr to 'product.image' -->
+                    <img v-bind:src="product.image">
+                </figure>
+                <h2 v-text="product.title"></h2>
+                <p v-html="product.description"></p>
+
+                <p>Price: {{product.price}}</p>
+                <p>Available stock: {{product.availableInventory - cartItemCount }}</p>
+                
+                <p>Number of items in cart: {{cartItemCount}}</p>
+                <!--Creating the button to add items into the cart
+                v-on:click - is the interaction selected from the user
+                "addToCart" - is the method to be created to make the function 
+                -->
+                <button v-on:click="addToCart" v-if="canAddToCart">Add to Cart</button>
+                <button disabled='disabled' v-else>Add to Cart</button>
+                
+                <button v-on:click="removeFromCart">Remove</button>
+            </div>
+            <div v-else><!--This page will display the checkout-->
+                <h2>Checkout</h2>
+            </div>
+        </main>
+    </div><!--Creating the element where vue will be mounted on-->
+    <script type ="text/javascript">
+        let webstore = new Vue ({ //Vue instance
+            el:'#app', //option object DOM mounting point
+            data : {
+                showProduct:true,
+                sitename:'Vue.js Pet Depot',
+                product:{
+                    id: 1001,
+                    title : "Cat Food,25 lb bag",
+                    description : "A 25 pound bag of <em>irresistible</em>,"
+                    + "organic goodness for your cat.",
+                    price : 2000,
+                    image: "images/cat.png",
+                    availableInventory:5
+
+                },
+                cart:[] //Array for making the cart
+
+            },
+            //creating the "addToCart" function to add the product id 
+            // of the item to the array
+            methods:{
+                addToCart:function(){
+                    this.cart.push(this.product.id);
+                    
+                },
+                removeFromCart:function(){
+                    this.cart.pop(this.product.id);
+                },
+                showCheckout(){
+                    this.showProduct=this.showProduct ? false:true;
+                }
+            },
+            //computed  - is a type of function making
+            // use of existing values already present previously
+            computed:{
+                cartItemCount:function(){
+                    return this.cart.length ||"";
+                },
+                // For inventory purposes - this is a condition made so
+                // that the user cannot add the items to the cart more than 
+                // what is available
+                canAddToCart:function(){
+                    return this.product.availableInventory > this.cartItemCount;
+                }
+            }
+        });
+    </script>
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
